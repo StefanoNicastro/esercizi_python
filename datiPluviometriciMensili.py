@@ -1,46 +1,42 @@
-dati=(("Milano", [("Gennaio", 18),("Febbraio", 10), ("Marzo","N/D")]),
-("Monza",[("Gennaio", 4),("Febbraio","N/D"),("Marzo", 6)]),
-("Arese",[("Gennaio", 1),("Febbraio",20),("Marzo", 11)]))
+dati_pluviometrici=(
+    ("Milano", [("Gennaio", 10),("Febbraio", 9), ("Marzo", 7)]),
+    ("Pavia", [("Gennaio", 5),("Febbraio", 8), ("Marzo", 12)]),
+    ("Bergamo", [("Gennaio", 0),("Febbraio", 3), ("Marzo", 5)]),
+    ("Brescia", [("Gennaio", 7),("Febbraio", 0), ("Marzo", 10)])
+)
 
-info=[]
+def mediaMaxMin(città, mesi_mm):
 
-def media(capoluogo,mesi):
-    meseMin="no"
-    meseMax="no"
-    acqMin=0
-    acqMax=0
+  media=0
+  cont=0
+  mmMin=0
+  mmMax=0
+  meseMin=0
+  meseMax=0
 
-    media=0
-    cont=0
-    for mese in mesi:
-        if cont==0:
-            acqMin=mese[1]
-            acqMax=mese[1]
-            meseMin=mese[0]
-            meseMax=mese[0]
-            if mese[1]=="N/D":
-                acqMin=0
-                acqMax=0
-                meseMin=mese[0]
-                meseMax=mese[0]
+  for dati in mesi_mm:
+    for mese, mm in dati:
+      if mm>0:
+        media+=mm
+        cont+=1
+      
+      if cont==1 and mm>0:
+        mmMin=mm
+        mmMax=mm
+        meseMin=mese
+        meseMax=mese
+      elif cont>1 and mm>0:
+        if mmMin>mm:
+          mmMin=mm
+          meseMin=mese
+        if mmMax<mm:
+          mmMax=mm
+          meseMax=mese
 
-        if  mese[1]!="N/D" and mese[1]>acqMax:
-            acqMax=mese[1]
-            meseMax=mese[0]
+  media/=cont
+  stampa_tupla=(media,(mmMin,meseMin), (mmMax,meseMax))
+  
+  print(f"Città: {città}: {stampa_tupla}")
 
-        if mese[1]!="N/D" and mese[1]<acqMin:
-            acqMin=mese[1]
-            meseMin=mese[0]
-
-        if mese[1]!="N/D":
-            media=media+mese[1]
-            cont+=1
-    media/=cont
-    info.append((capoluogo,(media,(meseMax,acqMax),(meseMin,acqMin))))
-
-for cap in dati:
-    mesi=cap[1]
-    capoluogo=cap[0]
-    media(capoluogo,mesi)
-
-print(info)
+for (città, *mesi_mm) in dati_pluviometrici:
+  mediaMaxMin(città, mesi_mm)
